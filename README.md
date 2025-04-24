@@ -12,3 +12,7 @@ A system to manage clients and health programs.
 1. Install Python and Flask.
 2. Run `python app.py`.
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 34d326803f17771dc041c978430d13a200bf4e67
