@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">{{ client.name }}'s Profile</h3>
+        </div>
+        <div class="card-body">
+            <!-- Basic Info -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h5>Client ID: <span class="text-muted">#{{ client.id }}</span></h5>
+                </div>
+                <div class="col-md-6 text-end">
+                    <button class="btn btn-sm btn-danger" onclick="confirmDelete({{ client.id }})">Delete Client</button>
+                </div>
+            </div>
+
+            <!-- Enrolled Programs -->
+            <h5>Enrolled Programs</h5>
+            <div id="programs-list" class="mb-4">
+                {% if client.programs %}
+                    {% for program in client.programs %}
+                        <span class="badge bg-success me-2">{{ program.name }}</span>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted">No programs enrolled.</p>
+                {% endif %}
+            </div>
+
+            <!-- Enroll in New Program -->
+            <h5>Enroll in Program</h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <select id="program-select" class="form-select">
+                        <option value="">Select a program...</option>
+                        {% for program in all_programs %}
+                            <option value="{{ program.id }}">{{ program.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <button class="btn btn-primary" onclick="enrollClient({{ client.id }})">Enroll</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for interactivity -->
+<script>
+function enrollClient(clientId) {
+    const programId = document.getElementById('program-select').value;
+    fetch(`/enroll_client_ajax`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ client_id: clientId, program_id: programId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload(); // Refresh to show updated programs
+        } else {
+            alert(data.error || "Failed to enroll!");
+        }
+    });
+}
+
+function confirmDelete(clientId) {
+    if (confirm("Delete this client permanently?")) {
+        fetch(`/delete_client/${clientId}`, { method: 'DELETE' })
+        .then(() => window.location.href = "/home");
+    }
+}
+</script>
+
+{% endblock %}

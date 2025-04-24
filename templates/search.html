@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-info text-white">
+            <h3 class="mb-0">Search Clients</h3>
+        </div>
+        <div class="card-body">
+            <input type="text" id="search-input" class="form-control" placeholder="Search by name..." 
+                   onkeyup="searchClients(this.value)">
+            <div id="search-results" class="mt-3">
+                <!-- Results populated dynamically via JavaScript -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function searchClients(query) {
+    fetch(`/search_clients_ajax?q=${query}`)
+    .then(response => response.json())
+    .then(data => {
+        const resultsDiv = document.getElementById('search-results');
+        resultsDiv.innerHTML = data.map(client => `
+            <div class="list-group-item">
+                <a href="/client_profile/${client.id}">${client.name}</a>
+                <span class="text-muted">ID: ${client.id}</span>
+            </div>
+        `).join('');
+    });
+}
+</script>
+{% endblock %}

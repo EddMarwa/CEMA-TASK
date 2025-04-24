@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-warning text-dark">
+            <h3 class="mb-0">Manage Health Programs</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                {% for program in programs %}
+                    <div class="col-md-4 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5>{{ program.name }}</h5>
+                                <button class="btn btn-sm btn-danger float-end delete-btn" data-id="{{ program.id }}">Delete</button>
+
+                                        
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    
+function deleteProgram(programId) {
+    if (confirm("Delete this program?")) {
+        fetch(`/delete_program/${programId}`, { method: 'DELETE' })
+        .then(() => window.location.reload());
+    }
+}
+// Deletion button logic
+document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const programId = this.getAttribute('data-id');
+                if (confirm("Delete this program?")) {
+                    fetch(`/delete_program/${programId}`, {
+                        method: 'DELETE'
+                    })
+                    .then(res => {
+                        if (!res.ok) throw new Error('Failed to delete');
+                        return res.json();
+                    })
+                    .then(data => {
+                        if (data.success) window.location.reload();
+                    })
+                    .catch(err => {
+                        console.error('Error:', err);
+                        alert('Could not delete program.');
+                    });
+                }
+            });
+        });
+    });
+</script>
+    
+{% endblock %}

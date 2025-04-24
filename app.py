@@ -160,6 +160,54 @@ def list_programs():
     programs = HealthProgram.query.all()
     return jsonify([{"id": p.id, "name": p.name} for p in programs])
 
+# Client Profile Route
+@app.route('/client_profile/<int:client_id>')
+@login_required
+def client_profile(client_id):
+    client = Client.query.get_or_404(client_id)
+    programs = HealthProgram.query.all()
+    return render_template('client_profile.html', client=client, all_programs=programs)
+
+# AJAX: Search Clients
+@app.route('/search_clients_ajax')
+@login_required
+def search_clients_ajax():
+    query = request.args.get('q')
+    clients = Client.query.filter(Client.name.ilike(f'%{query}%')).all()
+    return jsonify([{'id': c.id, 'name': c.name} for c in clients])
+
+# AJAX: Enroll Client
+@app.route('/enroll_client_ajax', methods=['POST'])
+@login_required
+def enroll_client_ajax():
+    data = request.get_json()
+    client = Client.query.get(data['client_id'])
+    program = HealthProgram.query.get(data['program_id'])
+    
+    if not client or not program:
+        return jsonify({'success': False, 'error': 'Invalid client/program'})
+    
+    client.programs.append(program)
+    db.session.commit()
+    return jsonify({'success': True})
+
+# Delete Routes
+@app.route('/delete_client/<int:client_id>', methods=['DELETE'])
+@login_required
+def delete_client(client_id):
+    client = Client.query.get_or_404(client_id)
+    db.session.delete(client)
+    db.session.commit()
+    return jsonify({'success': True})
+
+@app.route('/delete_program/<int:program_id>', methods=['DELETE'])
+@login_required
+def delete_program(program_id):
+    program = HealthProgram.query.get_or_404(program_id)
+    db.session.delete(program)
+    db.session.commit()
+    return jsonify({'success': True})
+
 #------------------- Initialize Database -------------------#
 def create_tables():
     with app.app_context():
