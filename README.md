@@ -1,5 +1,4 @@
 # CEMA-TASK
-# CEMA-TASK
 # Health Information System
 
 A system to manage clients and health programs.
