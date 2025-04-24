@@ -1,87 +1,50 @@
-from flask import Flask, jsonify, request, render_template
-import json
-import os
-
-app = Flask(__name__)
-
-# File paths to this project
-CLIENTS_FILE = os.path.join('data', 'clients.json')
-PROGRAMS_FILE = os.path.join('data', 'programs.json')
-
-# This function helps to read data
-def read_json(file_path):
-    with open(file_path, 'r') as f:
-        return json.load(f)
-
-# This function helps to write data
-def write_json(data, file_path):
-    with open(file_path, 'w') as f:
-        json.dump(data, f, indent=4)
-
-# Homepage
-@app.route('/')
-def home():
-    return "Health System Home"
-
-if __name__ == '__main__':
-    app.run(debug=True)
-################ A. Create a Health Program ##############################
-@app.route('/create_program', methods=['POST'])
-def create_program():
-    data = request.get_json()
-    programs = read_json(PROGRAMS_FILE)
-    programs.append(data)
-    write_json(programs, PROGRAMS_FILE)
-    return jsonify({"message": "Program created!"})
-################# B. Register a Client ################################
-@app.route('/register_client', methods=['POST'])
-def register_client():
-    client_data = request.get_json()
-    clients = read_json(CLIENTS_FILE)
-    clients.append(client_data)
-    write_json(clients, CLIENTS_FILE)
-    return jsonify({"message": "Client registered!"})
-
-################# C. Search for a Client ################################
-@app.route('/search_client/<name>')
-def search_client(name):
-    clients = read_json(CLIENTS_FILE)
-    for client in clients:
-        if client['name'].lower() == name.lower():
-            return jsonify(client)
-    return jsonify({"message": "Client not found"})
-
-################# Database setup ################################
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
+import os
 
+# Initialize Flask App
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key-123'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Initialize Database and Login Manager
 db = SQLAlchemy(app)
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
 
-login_manager = LoginManager()
-login_manager.init_app(app)
-
-# User Model
+#------------------- Database Models -------------------#
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
 
+class HealthProgram(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), unique=True)
+
+class Client(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100))
+    programs = db.relationship('HealthProgram', secondary='client_program')
+
+# Association Table
+client_program = db.Table('client_program',
+    db.Column('client_id', db.Integer, db.ForeignKey('client.id')),
+    db.Column('program_id', db.Integer, db.ForeignKey('health_program.id'))
+)
+
+#------------------- Authentication Routes -------------------#
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# Initialize database
-with app.app_context():
-    db.create_all()
+@app.route('/')
+def index():
+    return redirect(url_for('login'))
 
-################# Authentication Routes ################################
-
-# Login Route
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -92,10 +55,9 @@ def login():
         if user and check_password_hash(user.password, password):
             login_user(user)
             return redirect(url_for('home'))
-        flash('Invalid credentials')
+        flash('Invalid username or password')
     return render_template('login.html')
 
-# Signup Route
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
@@ -112,49 +74,97 @@ def signup():
         return redirect(url_for('login'))
     return render_template('signup.html')
 
-# Logout Route
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('login'))
 
-# Protected Homepage
+#------------------- Protected Routes -------------------#
 @app.route('/home')
 @login_required
 def home():
-    return render_template('home.html')
+    clients = Client.query.all() 
+    return render_template('home.html', clients=clients)
 
 
-################# Update Existing Features for Database ################################
-class HealthProgram(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), unique=True)
+#------------------- Health Program & Client Routes -------------------#
+@app.route('/create_program', methods=['POST'])
+@login_required
+def create_program():
+    program_name = request.form.get('name')
+    
+    # Check if program already exists
+    if HealthProgram.query.filter_by(name=program_name).first():
+        return jsonify({"error": "Program already exists!"}), 400
+    
+    # Add to database
+    new_program = HealthProgram(name=program_name)
+    db.session.add(new_program)
+    db.session.commit()
+    
+    return jsonify({"message": f"Program '{program_name}' created!"})
 
-class Client(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100))
-    programs = db.relationship('HealthProgram', secondary='client_program')
+@app.route('/register_client', methods=['POST'])
+@login_required
+def register_client():
+    client_name = request.form.get('name')
+    
+    # Create new client
+    new_client = Client(name=client_name)
+    db.session.add(new_client)
+    db.session.commit()
+    
+    return jsonify({"message": f"Client '{client_name}' registered!"})
 
-# Association Table
-client_program = db.Table('client_program',
-    db.Column('client_id', db.Integer, db.ForeignKey('client.id')),
-    db.Column('program_id', db.Integer, db.ForeignKey('health_program.id'))
-)
-#################  ################################
-#################  ################################
-#################  ################################
-#################  ################################
-#################  ################################
-#################  ################################
-#################  ################################
-#################  ################################
-#################  ################################
-#################  ################################
-#################  ################################
-#################  ################################
-#################  ################################
-#################  ################################
-#################  ################################
-#################  ################################
-#################  ################################
+@app.route('/enroll_client', methods=['POST'])
+@login_required
+def enroll_client():
+    client_id = request.form.get('client_id')
+    program_id = request.form.get('program_id')
+    
+    client = Client.query.get(client_id)
+    program = HealthProgram.query.get(program_id)
+    
+    if not client or not program:
+        return jsonify({"error": "Client or Program not found!"}), 404
+    
+    # Add program to client's enrollment
+    client.programs.append(program)
+    db.session.commit()
+    
+    return jsonify({"message": f"Client enrolled in {program.name}!"})
+
+@app.route('/search_client/<name>')
+@login_required
+def search_client(name):
+    client = Client.query.filter_by(name=name).first()
+    if client:
+        # Get enrolled programs
+        programs = [program.name for program in client.programs]
+        return jsonify({
+            "name": client.name,
+            "programs": programs
+        })
+    return jsonify({"message": "Client not found"}), 404
+
+@app.route('/clients')
+@login_required
+def list_clients():
+    clients = Client.query.all()
+    return jsonify([{"id": c.id, "name": c.name} for c in clients])
+
+@app.route('/programs')
+@login_required
+def list_programs():
+    programs = HealthProgram.query.all()
+    return jsonify([{"id": p.id, "name": p.name} for p in programs])
+
+#------------------- Initialize Database -------------------#
+def create_tables():
+    with app.app_context():
+        db.create_all()
+
+if __name__ == '__main__':
+    create_tables()
+    app.run(debug=True)
