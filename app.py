@@ -127,8 +127,6 @@ def home():
 
 
 ################# Update Existing Features for Database ################################
-
-# Add to app.py
 class HealthProgram(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True)
