@@ -12,7 +12,8 @@
                     <h5>Client ID: <span class="text-muted">#{{ client.id }}</span></h5>
                 </div>
                 <div class="col-md-6 text-end">
-                    <button class="btn btn-sm btn-danger" onclick="confirmDelete({{ client.id }})">Delete Client</button>
+                    <button class="btn btn-sm btn-danger delete-client-btn" data-id="{{ client.id }}">Delete Client</button>
+
                 </div>
             </div>
 
@@ -40,7 +41,7 @@
                     </select>
                 </div>
                 <div class="col-md-6">
-                    <button class="btn btn-primary" onclick="enrollClient({{ client.id }})">Enroll</button>
+                    <button class="btn btn-primary enroll-client-btn" data-id="{{ client.id }}">Enroll</button>
                 </div>
             </div>
         </div>
@@ -72,6 +73,60 @@ function confirmDelete(clientId) {
         .then(() => window.location.href = "/home");
     }
 }
+// button logic
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.delete-client-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const clientId = this.getAttribute('data-id');
+            if (confirm("Are you sure you want to delete this client?")) {
+                fetch(`/delete_client/${clientId}`, {
+                    method: 'DELETE'
+                })
+                .then(res => {
+                    if (!res.ok) throw new Error('Failed to delete client.');
+                    return res.json();
+                })
+                .then(data => {
+                    if (data.success) window.location.reload();
+                    else alert("Delete failed.");
+                })
+                .catch(err => {
+                    console.error('Delete error:', err);
+                    alert('An error occurred while deleting the client.');
+                });
+            }
+        });
+    });
+});
+// Enroll client button
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.enroll-client-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const clientId = this.getAttribute('data-id');
+            if (confirm("Enroll this client?")) {
+                fetch(`/enroll_client/${clientId}`, {
+                    method: 'POST'
+                })
+                .then(res => {
+                    if (!res.ok) throw new Error('Enrollment failed');
+                    return res.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        alert("Client enrolled successfully!");
+                        window.location.reload();
+                    } else {
+                        alert("Enrollment failed.");
+                    }
+                })
+                .catch(err => {
+                    console.error('Error:', err);
+                    alert('An error occurred during enrollment.');
+                });
+            }
+        });
+    });
+});
 </script>
 
 {% endblock %}
