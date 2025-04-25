@@ -80,12 +80,18 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
+
 #------------------- Protected Routes -------------------#
 @app.route('/home')
 @login_required
 def home():
     clients = Client.query.all() 
     return render_template('home.html', clients=clients)
+
+@app.route('/search')
+@login_required
+def search():
+    return render_template('search.html')
 
 
 #------------------- Health Program & Client Routes -------------------#
