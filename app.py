@@ -10,7 +10,7 @@ app.config['SECRET_KEY'] = 'your-secret-key-123'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Initialize Database and Login Manager
+#  Database and Login Manager
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
