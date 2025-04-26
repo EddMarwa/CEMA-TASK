@@ -212,7 +212,7 @@ def delete_program(program_id):
     db.session.commit()
     return jsonify({'success': True})
 
-#------------------- Initialize Database -------------------#
+#------------------- Database  Initializing -------------------#
 def create_tables():
     with app.app_context():
         db.create_all()
