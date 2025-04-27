@@ -98,7 +98,7 @@ def search():
 def create_program():
     program_name = request.form.get('name')
     
-    # Check if program already exists
+    # Checks if program already exists
     if HealthProgram.query.filter_by(name=program_name).first():
         return jsonify({"error": "Program already exists!"}), 400
     
