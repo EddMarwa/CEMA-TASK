@@ -92,7 +92,6 @@ def search():
     return render_template('search.html')
 
 
-
 #------------------- Health Program & Client Routes -------------------#
 @app.route('/create_program', methods=['POST'])
 @login_required
