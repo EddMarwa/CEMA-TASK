@@ -82,7 +82,6 @@ def logout():
 #------------------- Protected Routes -------------------#
 
 
-
 @app.route('/home')
 @login_required
 def home():
