@@ -80,8 +80,6 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 #------------------- Protected Routes -------------------#
-
-
 @app.route('/home')
 @login_required
 def home():
