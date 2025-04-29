@@ -12,7 +12,20 @@ A system to manage clients and health programs.
 1. Install Python and Flask.
 2. Run `python app.py`.
 
-<<<<<<< HEAD
-=======
+## Project Structure
 
->>>>>>> 34d326803f17771dc041c978430d13a200bf4e67
+CEMA-TASK/
+├── app.py                 # Main application logic
+├── instance/
+│   └── database.db        # SQLite database
+├── templates/             # HTML templates
+│   ├── base.html          # Base layout
+│   ├── home.html          # Dashboard
+│   ├── login.html         # Login page
+│   ├── signup.html        # Signup page
+│   ├── search.html        # Search interface
+│   ├── programs.html      # Program management
+│   └── client_profile.html# Client details
+├── requirements.txt       # Dependencies
+└── README.md              # Documentation
+
