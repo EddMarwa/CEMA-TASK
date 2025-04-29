@@ -29,3 +29,19 @@ CEMA-TASK/
 ├── requirements.txt       # Dependencies
 └── README.md              # Documentation
 
+## Usage 🚀
+Sign Up: Create an account at /signup.
+
+Log In: Authenticate at /login.
+
+Dashboard (/home):
+
+Create Programs: Enter a program name (e.g., "HIV").
+
+Register Clients: Add client names (e.g., "Alice").
+
+Enroll Clients: Link clients to programs using IDs.
+
+Search Clients: Visit /search for real-time client lookup.
+
+Manage Programs: Delete programs at /programs.
