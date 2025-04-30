@@ -24,7 +24,6 @@ A Flask-based web application for managing healthcare clients and programs, feat
 - **Security**: Werkzeug password hashing, session management
 
 ## Installation 💻
-
 ### Prerequisites
 - Python 3.9+
 - pip package manager
