@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, jso
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash
+from werkzeug.security import check_password_hash
 import re
 import os
 
@@ -53,6 +54,7 @@ def login():
         password = request.form['password']
         user = User.query.filter_by(username=username).first()
         
+
         if user and check_password_hash (user.password, password):
             login_user(user)
             return redirect(url_for('home'))
