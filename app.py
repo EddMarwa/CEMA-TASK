@@ -63,17 +63,35 @@ def login():
 def signup():
     if request.method == 'POST':
         username = request.form['username']
-        password = generate_password_hash(request.form['password'])
-        
-        if User.query.filter_by(username=username).first():
-            flash('Username already exists')
+        password = request.form['password']
+
+        # Password validation rules
+        if len(password) < 8:
+            flash("Password must be at least 8 characters long.")
             return redirect(url_for('signup'))
-            
-        new_user = User(username=username, password=password)
+        if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", password):
+            flash("Password must contain at least one special character.")
+            return redirect(url_for('signup'))
+        if not re.search(r"\d", password):
+            flash("Password must contain at least one number.")
+            return redirect(url_for('signup'))
+
+        # Check for existing username
+        if User.query.filter_by(username=username).first():
+            flash("Username already exists.")
+            return redirect(url_for('signup'))
+
+        # Hash password
+        hashed_password = generate_password_hash(password)
+        new_user = User(username=username, password=hashed_password)
         db.session.add(new_user)
         db.session.commit()
+
+        flash("Account created successfully! Please log in.")
         return redirect(url_for('login'))
+
     return render_template('signup.html')
+
 
 @app.route('/logout')
 @login_required
