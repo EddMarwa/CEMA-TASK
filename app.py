@@ -209,7 +209,7 @@ def search_clients_ajax():
     clients = Client.query.filter(Client.name.ilike(f'%{query}%')).all()
     return jsonify([{'id': c.id, 'name': c.name} for c in clients])
 
-# AJAX: Enroll Client
+# AJAX: Enroll Clients
 @app.route('/enroll_client_ajax', methods=['POST'])
 @login_required
 def enroll_client_ajax():
