@@ -51,6 +51,7 @@ def index():
     return redirect(url_for('login'))
 
 @app.route('/login', methods=['GET', 'POST'])
+@limiter.limit("5 per minute") 
 def login():
     if request.method == 'POST':
         username = escape(request.form['username'].strip())  # Sanitize input
