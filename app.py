@@ -51,7 +51,12 @@ def index():
     return redirect(url_for('login'))
 
 
-
+# Initialize Limiter
+limiter = Limiter(
+    app=app,
+    key_func=get_remote_address,
+    default_limits=["200 per day", "50 per hour"]
+)
 
 @app.route('/login', methods=['GET', 'POST'])
 @limiter.limit("5 per minute") 
