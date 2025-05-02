@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
+from flask import escape
 import re
 import os
 
@@ -50,15 +51,14 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        user = User.query.filter_by(username=username).first()
+        username = escape(request.form['username'].strip())  # Sanitize input
+        password = escape(request.form['password'].strip())
         
-
-        if user and check_password_hash (user.password, password):
+        user = User.query.filter_by(username=username).first()
+        if user and check_password_hash(user.password, password):
             login_user(user)
             return redirect(url_for('home'))
-        flash('Invalid username or password')
+        flash('Invalid username or password.')
     return render_template('login.html')
 
 @app.route('/signup', methods=['GET', 'POST'])
