@@ -37,7 +37,6 @@ class Client(db.Model):
     programs = db.relationship('HealthProgram', secondary='client_program')
 
 # Association Tables
-
 client_program = db.Table('client_program',
     db.Column('client_id', db.Integer, db.ForeignKey('client.id')),
     db.Column('program_id', db.Integer, db.ForeignKey('health_program.id'))
@@ -52,7 +51,7 @@ def index():
     return redirect(url_for('login'))
 
 
-# Initialize Limiter
+# Initializig  Limiters for trial
 limiter = Limiter(
     app=app,
     key_func=get_remote_address,
