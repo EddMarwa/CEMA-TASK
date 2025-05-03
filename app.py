@@ -62,7 +62,7 @@ limiter = Limiter(
 @limiter.limit("5 per minute") 
 def login():
     if request.method == 'POST':
-        username = escape(request.form['username'].strip())  # Sanitizes input
+        username = escape(request.form['username'].strip())  
         password = escape(request.form['password'].strip())
         
         user = User.query.filter_by(username=username).first()
