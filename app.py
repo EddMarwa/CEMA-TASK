@@ -24,7 +24,7 @@ login_manager.login_view = 'login'
 #------------------- Database Models -------------------#
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
+    username = db.Column(db.Strin g(80), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
 
 class HealthProgram(db.Model):
@@ -95,7 +95,7 @@ def signup():
             flash("Username already exists.")
             return redirect(url_for('signup'))
 
-        # Hashing passwords before storage in db
+        # Hashing passwords before storage in the database
         hashed_password = generate_password_hash(password)
         new_user = User(username=username, password=hashed_password)
         db.session.add(new_user)
