@@ -95,7 +95,7 @@ def signup():
             flash("Username already exists.")
             return redirect(url_for('signup'))
 
-        # Hashing all passwords before storage in the database
+        # Hashing passwords before storage in the database
         hashed_password = generate_password_hash(password)
         new_user = User(username=username, password=hashed_password)
         db.session.add(new_user)
