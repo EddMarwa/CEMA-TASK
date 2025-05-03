@@ -90,7 +90,7 @@ def signup():
             flash("Password must contain at least one number.")
             return redirect(url_for('signup'))
 
-        # Check for existing username before Auth
+        # Check username before Auth
         if User.query.filter_by(username=username).first():
             flash("Username already exists.")
             return redirect(url_for('signup'))
