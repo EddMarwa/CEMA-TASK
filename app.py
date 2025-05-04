@@ -10,7 +10,7 @@ from flask_limiter.util import get_remote_address
 import re
 import os
 
-# Initializing first phase 
+# Initializing firs
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key-123'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
