@@ -143,7 +143,7 @@ def create_program():
 def register_client():
     client_name = request.form.get('name')
     
-    # Create new client
+    # Create new clients
     new_client = Client(name=client_name)
     db.session.add(new_client)
     db.session.commit()
@@ -173,7 +173,7 @@ def enroll_client():
 def search_client(name):
     client = Client.query.filter_by(name=name).first()
     if client:
-        # Get enrolled programs
+        # Get enrolled to programs
         programs = [program.name for program in client.programs]
         return jsonify({
             "name": client.name,
