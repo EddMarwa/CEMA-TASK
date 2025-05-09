@@ -121,7 +121,7 @@ def home():
 @login_required
 def search():
     return render_template('search.html')
-#------------------ Health Program & Client Routes ------------------#
+#------------------ Health Program & Client Routes----------------#
 @app.route('/create_program', methods=['POST'])
 @login_required
 def create_program():
