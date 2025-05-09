@@ -42,7 +42,7 @@ client_program = db.Table('client_program',
     db.Column('client_id', db.Integer, db.ForeignKey('client.id')),
     db.Column('program_id', db.Integer, db.ForeignKey('health_program.id'))
 )
-#------------------- Authentication Routes -------------------#
+#------------------ Authentication Routes ------------------#
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -127,7 +127,7 @@ def search():
 def create_program():
     program_name = request.form.get('name')
     
-    # Checks if program already exists
+    # Checks if program already  exists
     if HealthProgram.query.filter_by(name=program_name).first():
         return jsonify({"error": "Program already exists!"}), 400
     
