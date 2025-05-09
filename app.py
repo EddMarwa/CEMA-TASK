@@ -224,7 +224,7 @@ def enroll_client_ajax():
     db.session.commit()
     return jsonify({'success': True})
 
-# Delete Routes
+# Deleting Routes
 @app.route('/delete_client/<int:client_id>', methods=['DELETE'])
 @login_required
 def delete_client(client_id):
