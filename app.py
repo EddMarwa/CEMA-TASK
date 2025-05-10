@@ -143,7 +143,7 @@ def create_program():
 def register_client():
     client_name = request.form.get('name')
     
-    # Create new clients
+    # Creates new clients
     new_client = Client(name=client_name)
     db.session.add(new_client)
     db.session.commit()
