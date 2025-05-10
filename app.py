@@ -79,7 +79,7 @@ def signup():
         username = request.form['username']
         password = request.form['password']
 
-        # Password validation rules
+        # Password validation and rules
         if len(password) < 8:
             flash("Password must be at least 8 characters long.")
             return redirect(url_for('signup'))
