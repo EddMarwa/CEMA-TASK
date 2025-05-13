@@ -167,7 +167,6 @@ def enroll_client():
     db.session.commit()
     
     return jsonify({"message": f"Client enrolled in {program.name}!"})
-
 @app.route('/search_client/<name>')
 @login_required
 def search_client(name):
@@ -241,7 +240,7 @@ def delete_program(program_id):
     db.session.commit()
     return jsonify({'success': True})
 
-#------------- Database  Initializing------#
+#-------- Database  Initializing ------#
 def create_tables():
     with app.app_context():
         db.create_all()
