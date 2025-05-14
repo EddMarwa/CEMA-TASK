@@ -162,7 +162,7 @@ def enroll_client():
     if not client or not program:
         return jsonify({"error": "Client or Program not found!"}), 404
     
-    # Add program to client's enrollment
+    # Adds program to client's enrollment
     client.programs.append(program)
     db.session.commit()
     
