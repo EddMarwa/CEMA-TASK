@@ -131,7 +131,7 @@ def create_program():
     if HealthProgram.query.filter_by(name=program_name).first():
         return jsonify({"error": "Program already exists!"}), 400
     
-    # Adds todatabase
+    # Addstodatabase
     new_program = HealthProgram(name=program_name)
     db.session.add(new_program)
     db.session.commit()
