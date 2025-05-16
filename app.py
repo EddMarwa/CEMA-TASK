@@ -172,7 +172,7 @@ def enroll_client():
 def search_client(name):
     client = Client.query.filter_by(name=name).first()
     if client:
-        # Get enrolled to programs
+        # Get clients enrolled to programs
         programs = [program.name for program in client.programs]
         return jsonify({
             "name": client.name,
