@@ -149,6 +149,7 @@ def register_client():
     db.session.commit()
     
     return jsonify({"message": f"Client '{client_name}' registered!"})
+
 @app.route('/enroll_client', methods=['POST'])
 @login_required
 def enroll_client():
