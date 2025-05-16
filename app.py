@@ -134,8 +134,7 @@ def create_program():
     # Adds to database
     new_program = HealthProgram(name=program_name)
     db.session.add(new_program)
-    db.session.commit()
-    
+    db.session.commit()   
     return jsonify({"message": f"Program '{program_name}' created!"})
 
 @app.route('/register_client', methods=['POST'])
