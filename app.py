@@ -9,7 +9,6 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 import re
 import os
-
 # Initializing flask App
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key-123'
