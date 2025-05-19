@@ -48,6 +48,8 @@ def load_user(user_id):
 def index():
     return redirect(url_for('login'))
 
+
+
 # Initializig  Limiter
 limiter = Limiter(
     app=app,
