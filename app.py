@@ -47,8 +47,6 @@ def load_user(user_id):
 @app.route('/')
 def index():
     return redirect(url_for('login'))
-
-
 # Initializig  Limiter
 limiter = Limiter(
     app=app,
