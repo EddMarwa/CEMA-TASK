@@ -41,8 +41,6 @@ client_program = db.Table('client_program',
     db.Column('program_id', db.Integer, db.ForeignKey('health_program.id'))
 )
 #---------- Authentication Routes -----------#
-
-
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
