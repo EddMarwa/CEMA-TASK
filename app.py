@@ -23,7 +23,7 @@ login_manager.login_view = 'login'
 #------- Database Models ------------#
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.Strin g(80), unique=True, nullable=False)
+    username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
 
 class HealthProgram(db.Model):
