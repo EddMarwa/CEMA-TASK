@@ -16,7 +16,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 #  Database and Login Manager 
-
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
@@ -48,6 +47,7 @@ def load_user(user_id):
 @app.route('/')
 def index():
     return redirect(url_for('login'))
+
 # Initializig  Limiter
 limiter = Limiter(
     app=app,
@@ -107,6 +107,7 @@ def signup():
 def logout():
     logout_user()
     return redirect(url_for('login'))
+
 #---------------- Protected Routes -----------------#
 @app.route('/home')
 @login_required
@@ -118,6 +119,7 @@ def home():
 @login_required
 def search():
     return render_template('search.html')
+
 #------------ Health Program & Client Routes---------------#
 @app.route('/create_program', methods=['POST'])
 @login_required
