@@ -2,3 +2,6 @@ flask
 flask-sqlalchemy
 flask-login
 werkzeug
+
+
+git commit --date="YYYY-MM-DD HH:MM:SS" -m "Your commit message"
