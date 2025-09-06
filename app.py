@@ -178,6 +178,8 @@ def search_client(name):
         })
     return jsonify({"message": "Client not found"}), 404
 
+
+
 @app.route('/clients')
 @login_required
 def list_clients():
